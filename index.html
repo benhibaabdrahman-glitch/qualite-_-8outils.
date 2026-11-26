@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مختبر الجودة الصناعية — شرح مرئي وصوتي وكيفية الرسم</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      line-height: 1.65;
+      padding: 14px;
+    }
+    .app {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .header {
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 14px 18px;
+      text-align: center;
+      margin-bottom: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    .header h1 {
+      font-size: 1.35rem;
+      color: #38bdf8;
+      margin-bottom: 4px;
+    }
+    .header .summary {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    .header .status {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #34d399;
+      margin-top: 4px;
+    }
+    .scene-tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tab-btn {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+    .canvas-box {
+      background: #0b1120;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      margin-bottom: 8px;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 400px;
+    }
+    .guide-box {
+      background: #064e3b;
+      color: #a7f3d0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 9px 14px;
+      border-radius: 10px;
+      margin-bottom: 7px;
+      text-align: right;
+    }
+    .sub-box {
+      background: #172554;
+      color: #fde047;
+      font-size: 0.94rem;
+      padding: 9px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 13px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    .btn:hover { opacity: 0.92; }
+    .step-counter {
+      margin-right: auto;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1 id="titleLbl"></h1>
+      <div class="summary" id="descLbl"></div>
+      <div class="status" id="statusLbl">الواجهة جاهزة لعرض الشرح المرئي والصوتي باللغة العربية الفصحى.</div>
+    </div>
+
+    <div class="scene-tabs" id="sceneTabs"></div>
+
+    <div class="canvas-box">
+      <canvas id="sceneCanvas" width="1020" height="400"></canvas>
+    </div>
+
+    <div class="guide-box" id="guideLbl"></div>
+    <div class="sub-box" id="subLbl"></div>
+
+    <div class="controls">
+      <button class="btn" style="background:#334155;" onclick="prevScene()">⏮ السابق</button>
+      <button class="btn" id="playBtn" style="background:#0284c7;" onclick="togglePlay()">⏸ إيقاف مؤقت</button>
+      <button class="btn" style="background:#475569;" onclick="replayScene()">🔄 إعادة العرض</button>
+      <button class="btn" id="modeBtn" style="background:#0d9488;" onclick="toggleViewMode()">✏️ صوت كيفية الرسم</button>
+      <button class="btn" id="voiceBtn" style="background:#7c3aed;" onclick="toggleVoice()">🔊 الصوت: مفعل</button>
+      <button class="btn" style="background:#d97706;" onclick="testAudio()">🔔 اختبار السماعة</button>
+      <button class="btn" style="background:#10b981;" onclick="nextScene()">التالي ⏭</button>
+      <span class="step-counter" id="stepLbl">1 / 6</span>
+    </div>
+  </div>
+
+  <script>
+    const SCENES = [
+      {
+        id: "gantt",
+        title: "1. مخطط غانت (GANTT) — جدولة المهام والمدد الزمنية",
+        summary: "التعريف: جدول زمني يوضح المهام ومدتها. الهدف: معرفة موعد بدء كل مرحلة وانتهائها، ومتابعة التزام خط الإنتاج بالجدول الزمني المقرر.",
+        voiceText: "المحور الأول: مخطط غانت. هو أداة تخطيط بصرية تعرض مراحل العمل ومدة كل مرحلة داخل المصنع، مثل طلب العميل، وورشة الهيكل، وورشة الطلاء، والتجميع النهائي، ومراقبة الجودة. يتيح هذا المخطط متابعة تقدم العمل واكتشاف أي تأخر مبكراً للتأكد من الالتزام بموعد التسليم المحدد.",
+        drawGuide: "خطوات رسم مخطط غانت: أولاً، ارسم محوراً عمودياً على اليمين يتضمن أسماء المراحل والمهام، ومحور أفقياً في الأعلى يمثل الزمن بالأيام. ثانياً، ارسم أمام كل مهمة شريطاً أفقياً يبدأ عند يوم انطلاقها وينتهي عند نهاية مدتها. ثالثاً، رتّب الأشرطة حسب تسلسل التنفيذ لإبراز مدة كل مرحلة بوضوح."
+      },
+      {
+        id: "pert",
+        title: "2. مخطط بيرت (PERT) — شبكة الأنشطة والمسار الحرج",
+        summary: "التعريف: شبكة تربط بين الأنشطة وتوضح تتابعها ومدتها الزمنية. الهدف: تحديد المسار الحرج الذي لا يقبل أي تأخير في التنفيذ.",
+        voiceText: "المحور الثاني: مخطط بيرت. يوضح هذا المخطط ارتباط المراحل ببعضها ويُبرز المسار الحرج باللون الأحمر. أي تأخير ولو ليوم واحد في نشاط يقع على المسار الحرج يؤدي إلى تأخر تسليم المشروع بالكامل، بينما تتيح المسارات الأخرى مرونة زمنية أكبر.",
+        drawGuide: "خطوات رسم مخطط بيرت: أولاً، ارسم دوائر تمثل المراحل أو المحطات مثل البداية والورشات والتسليم. ثانياً، صل بينها بأسهم توضح اتجاه التسلسل واكتب فوق كل سهم المدة الزمنية المقدرة. ثالثاً، اجمع مدد كل مسار من البداية إلى النهاية، ثم لوّن أطول مسار زمنياً باللون الأحمر لأنه يمثل المسار الحرج."
+      },
+      {
+        id: "ishikawa",
+        title: "3. مخطط إيشيكاوا (5M) — تحليل أسباب العيوب",
+        summary: "التعريف: مخطط يشبه هيكل السمكة لتصنيف الأسباب المحتملة للمشكلة. الهدف: حصر الأسباب ضمن فئات رئيسية منظمة دون إغفال أي عامل مؤثر.",
+        voiceText: "المحور الثالث: مخطط إيشيكاوا أو تصنيف العوامل الخمسة. عند ظهور عيب في المنتج، نصنف الأسباب المحتملة ضمن خمس فئات رئيسية: المواد الأولية، والمعدات والآلات، والأيدي العاملة، ومحيط العمل، وطريقة العمل أو الإجراء المعتمد.",
+        drawGuide: "خطوات رسم مخطط إيشيكاوا: أولاً، ارسم خطاً أفقياً يمثل العمود الفقري وضع في رأسه المشكلة أو العيب المراد تحليله. ثانياً، ارسم فروعاً مائلة متصلة بالخط الأفقي تمثل الفئات الخمس: المواد الأولية، المعدات، الأيدي العاملة، المحيط، والطريقة. ثالثاً، أضف فروعاً صغيرة لكل فئة تضم الأسباب الفرعية المحتملة."
+      },
+      {
+        id: "pareto",
+        title: "4. مخطط باريتو (PARETO) — قاعدة 80 / 20 وترتيب الأولويات",
+        summary: "التعريف: رسم يرتب العيوب تنازلياً مع المنحنى التراكمي. الهدف: التركيز على الأسباب الأكثر تأثيراً التي تسبب النسبة الأكبر من المشاكل.",
+        voiceText: "المحور الرابع: مخطط باريتو أو قاعدة ثمانين إلى عشرين. يوضح هذا المخطط أن نسبة محدودة من الأسباب الرئيسية هي المسؤولة عن الغالبية العظمى من العيوب. لذلك نبدأ بمعالجة المشكلات ذات النسبة الأعلى أولاً لتحقيق أثر ملموس وسريع في تحسين الجودة.",
+        drawGuide: "خطوات رسم مخطط باريتو: أولاً، رتّب أنواع العيوب أو الأسباب ترتيباً تنازلياً من الأكثر تكراراً إلى الأقل. ثانياً، ارسم أعمدة رأسية لكل سبب بحسب نسبته المئوية. ثالثاً، احسب النسبة التراكمية وارسم منحناها مع خط أفقي عند مستوى ثمانين بالمئة لتحديد الأسباب ذات الأولوية القصوى."
+      },
+      {
+        id: "five_why",
+        title: "5. منهجية اللماذاات الخمس (5 WHY) — بلوغ السبب الجذري",
+        summary: "التعريف: طرح سؤال لماذا بشكل متسلسل عدة مرات. الهدف: الوصول إلى السبب الجذري الحقيقي للمشكلة بدلاً من الاكتفاء بمعالجة العرض الظاهري.",
+        voiceText: "المحور الخامس: منهجية اللماذاات الخمس. عند وقوع خلل، نسأل لماذا خطوة تلو الأخرى حتى نصل إلى السبب الجذري الحقيقي. فمعالجة السبب الجذري تمنع تكرار الخلل مستقبلاً، على عكس الاكتفاء بإصلاح الأثر الظاهري المؤقت فقط.",
+        drawGuide: "خطوات رسم سلسلة اللماذاات الخمس: أولاً، اكتب المشكلة الظاهرة في الإطار الأول. ثانياً، انتقل إلى إطار تالٍ يطرح سؤال لماذا ويجيب عنه استناداً إلى المرحلة السابقة. ثالثاً، واصل التسلسل من الأعلى إلى الأسفل حتى تصل إلى السبب الجذري ثم ميّزه بلون واضح."
+      },
+      {
+        id: "pdca",
+        title: "6. دورة ديمنغ (PDCA) — التحسين المستمر للجودة",
+        summary: "التعريف: حلقة مستمرة من أربع مراحل: خطط، نفّذ، تحقق، تصرّف. الهدف: تطوير العمليات باستمرار وتعميم الحلول الفعالة.",
+        voiceText: "المحور السادس: دورة ديمنغ أو دورة بي دي سي إيه. تقوم على التحسين المستمر عبر أربع مراحل مترابطة: التخطيط ووضع الحل المناسب، ثم التنفيذ التجريبي، ثم التحقق وقياس النتائج، ثم التصرف بتعميم الحل الناجح وتوحيد الإجراء، ثم استئناف الدورة للارتقاء المستمر بالجودة.",
+        drawGuide: "خطوات رسم دورة PDCA: أولاً، ارسم دائرة مقسمة إلى أربعة أرباع متصلة في حلقة مغلقة. ثانياً، سمِّ الأرباع الأربعة بالترتيب: خطط (Plan)، نفّذ (Do)، تحقق (Check)، تصرّف (Act). ثالثاً، اكتب في المنتصف عبارة التحسين المستمر للدلالة على استمرارية الدورة."
+      }
+    ];
+
+    let currentScene = 0;
+    let progress = 0.0;
+    let playing = true;
+    let voiceEnabled = true;
+    let viewMode = "explain";
+
+    const canvas = document.getElementById("sceneCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function getActiveSpokenText(scene) {
+      return viewMode === "draw_guide" ? scene.drawGuide : scene.voiceText;
+    }
+
+    function stopAudio() {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function speakArabic(text) {
+      stopAudio();
+      if (!voiceEnabled) {
+        document.getElementById("statusLbl").textContent = "🔇 الصوت متوقف حالياً.";
+        return;
+      }
+      if (!("speechSynthesis" in window)) {
+        document.getElementById("statusLbl").textContent = "ℹ️ المتصفح الحالي لا يدعم القراءة الصوتية المباشرة.";
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "ar-SA";
+      utter.rate = 0.96;
+      utter.onstart = () => {
+        document.getElementById("statusLbl").textContent = "🔊 يتم الآن تشغيل الشرح الصوتي باللغة العربية الفصحى.";
+      };
+      utter.onend = () => {
+        document.getElementById("statusLbl").textContent = "✅ اكتمل تشغيل الشرح الصوتي.";
+      };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function testAudio() {
+      speakArabic("اختبار الصوت في سماعة الرأس. إذا سمعت هذه العبارة بوضوح فالقراءة الصوتية تعمل بنجاح.");
+    }
+
+    function toggleViewMode() {
+      const btn = document.getElementById("modeBtn");
+      if (viewMode === "explain") {
+        viewMode = "draw_guide";
+        btn.textContent = "📘 صوت الشرح العام";
+        btn.style.background = "#2563eb";
+      } else {
+        viewMode = "explain";
+        btn.textContent = "✏️ صوت كيفية الرسم";
+        btn.style.background = "#0d9488";
+      }
+      speakArabic(getActiveSpokenText(SCENES[currentScene]));
+    }
+
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      const btn = document.getElementById("voiceBtn");
+      if (voiceEnabled) {
+        btn.textContent = "🔊 الصوت: مفعل";
+        btn.style.background = "#7c3aed";
+        speakArabic(getActiveSpokenText(SCENES[currentScene]));
+      } else {
+        btn.textContent = "🔇 الصوت: متوقف";
+        btn.style.background = "#475569";
+        stopAudio();
+        document.getElementById("statusLbl").textContent = "🔇 الصوت متوقف حالياً.";
+      }
+    }
+
+    function renderTabs() {
+      const container = document.getElementById("sceneTabs");
+      container.innerHTML = "";
+      SCENES.forEach((sc, idx) => {
+        const b = document.createElement("button");
+        b.className = "tab-btn" + (idx === currentScene ? " active" : "");
+        b.textContent = sc.title.split(" — ")[0];
+        b.onclick = () => loadScene(idx);
+        container.appendChild(b);
+      });
+    }
+
+    function loadScene(idx) {
+      currentScene = (idx + SCENES.length) % SCENES.length;
+      progress = 0.0;
+      playing = true;
+      const playBtn = document.getElementById("playBtn");
+      playBtn.textContent = "⏸ إيقاف مؤقت";
+      playBtn.style.background = "#0284c7";
+
+      const sc = SCENES[currentScene];
+      document.getElementById("titleLbl").textContent = sc.title;
+      document.getElementById("descLbl").textContent = sc.summary;
+      document.getElementById("guideLbl").textContent = "✏️ " + sc.drawGuide;
+      document.getElementById("subLbl").textContent = "🎙️ الشرح التفصيلي: " + sc.voiceText;
+      document.getElementById("stepLbl").textContent = `${currentScene + 1} / ${SCENES.length}`;
+      renderTabs();
+      speakArabic(getActiveSpokenText(sc));
+    }
+
+    function togglePlay() {
+      playing = !playing;
+      const playBtn = document.getElementById("playBtn");
+      if (playing) {
+        playBtn.textContent = "⏸ إيقاف مؤقت";
+        playBtn.style.background = "#0284c7";
+      } else {
+        playBtn.textContent = "▶ متابعة";
+        playBtn.style.background = "#f59e0b";
+      }
+    }
+
+    function replayScene() {
+      progress = 0.0;
+      playing = true;
+      const playBtn = document.getElementById("playBtn");
+      playBtn.textContent = "⏸ إيقاف مؤقت";
+      playBtn.style.background = "#0284c7";
+      speakArabic(getActiveSpokenText(SCENES[currentScene]));
+    }
+
+    function nextScene() {
+      loadScene(currentScene + 1);
+    }
+
+    function prevScene() {
+      loadScene(currentScene - 1);
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, width) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      const headLen = 10;
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawGantt(p) {
+      for (let i = 1; i <= 8; i++) {
+        const x = 275 + (i - 1) * 87;
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x, 34);
+        ctx.lineTo(x, 355);
+        ctx.stroke();
+
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "bold 13px Tahoma, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(`اليوم ${i}`, x + 43, 22);
+      }
+
+      const tasks = [
+        ["1. طلب العميل", 0, 1, "#38bdf8", "استلام المواصفات وجدولتها"],
+        ["2. ورشة الهيكل", 1, 2, "#818cf8", "تشكيل الهيكل ولحام الأجزاء"],
+        ["3. ورشة الطلاء", 3, 2, "#f472b6", "الطلاء الأساسي والطبقة الواقية"],
+        ["4. التجميع النهائي", 5, 2, "#34d399", "تركيب المحرك واللوحة والأنظمة"],
+        ["5. مراقبة الجودة", 7, 1, "#fbbf24", "الفحص والاختبار قبل التسليم"]
+      ];
+
+      tasks.forEach(([name, start, dur, color, note], idx) => {
+        const y = 60 + idx * 57;
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "bold 14px Tahoma, Arial";
+        ctx.textAlign = "right";
+        ctx.fillText(name, 260, y + 20);
+
+        const taskP = Math.max(0.0, Math.min(1.0, (p - idx * 0.14) / 0.35));
+        if (taskP > 0) {
+          const x1 = 275 + start * 87 + 4;
+          const w = (dur * 87 - 8) * taskP;
+          ctx.fillStyle = color;
+          ctx.fillRect(x1, y, w, 30);
+
+          if (taskP > 0.75) {
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "bold 12px Tahoma, Arial";
+            ctx.textAlign = "left";
+            const unit = dur === 1 ? "يوم واحد" : `${dur} أيام`;
+            ctx.fillText(`${unit} — ${note}`, x1 + w + 10, y + 19);
+          }
+        }
+      });
+    }
+
+    function drawPert(p) {
+      const nodes = {
+        A: [125, 190, ["البداية", "(0 يوم)"], true],
+        B: [375, 95, ["ورشة الهيكل", "(3 أيام)"], true],
+        C: [375, 285, ["تجهيز القطع", "(يومان)"], false],
+        D: [640, 95, ["ورشة الطلاء", "(4 أيام)"], true],
+        E: [640, 285, ["الإمداد", "(يومان)"], false],
+        F: [880, 190, ["التسليم", "المجموع: 9 أيام"], true]
+      };
+      const edges = [
+        ["A", "B", "3 أيام", true],
+        ["A", "C", "يومان", false],
+        ["B", "D", "4 أيام", true],
+        ["C", "E", "يومان", false],
+        ["D", "F", "يومان", true],
+        ["E", "F", "يوم واحد", false]
+      ];
+
+      edges.forEach(([u, v, label, crit], idx) => {
+        const ep = Math.max(0.0, Math.min(1.0, (p - idx * 0.1) / 0.3));
+        if (ep > 0) {
+          const [x1, y1] = nodes[u];
+          const [x2, y2] = nodes[v];
+          const cx = x1 + (x2 - x1) * ep;
+          const cy = y1 + (y2 - y1) * ep;
+          const col = crit ? "#ef4444" : "#475569";
+          drawArrow(x1, y1, cx, cy, col, crit ? 4 : 2);
+          if (ep > 0.7) {
+            ctx.fillStyle = col;
+            ctx.font = "bold 13px Tahoma, Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(label, (x1 + x2) / 2, (y1 + y2) / 2 - 12);
+          }
+        }
+      });
+
+      Object.values(nodes).forEach(([x, y, lines, crit]) => {
+        const col = crit ? "#ef4444" : "#334155";
+        ctx.fillStyle = "#1e293b";
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, 45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 12px Tahoma, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(lines[0], x, y - 4);
+        ctx.fillText(lines[1], x, y + 14);
+      });
+
+      if (p > 0.65) {
+        ctx.fillStyle = "#fca5a5";
+        ctx.font = "bold 13px Tahoma, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("المسار الحرج: البداية ← ورشة الهيكل ← ورشة الطلاء ← التسليم (9 أيام دون أي تأخير)", 510, 368);
+      }
+    }
+
+    function drawIshikawa(p) {
+      const spineX = 125 + 670 * Math.min
